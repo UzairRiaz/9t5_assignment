@@ -1,7 +1,7 @@
 const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const { pick } = require('./../utils/pick');
-const { jobService } = require('../services');
+const { jobService, resumeService } = require('../services');
 
 const getJobs = catchAsync(async (req, res) => {
     const options = pick(req.query, ['sortBy', 'limit', 'page']);
@@ -37,6 +37,8 @@ const deleteJob = catchAsync(async (req, res) => {
     if (!req.user.id.equals(job.employer)) {
         return res.status(httpStatus.FORBIDDEN).send({ message: 'You are not authorized to delete this job' });
     }
+    // delete Resume
+    await resumeService.deleteResumes(job.id);
     // delete job
     await jobService.deleteJob(req.params.id);
     return res.status(httpStatus.OK).send({ message: 'Job deleted successfully' });

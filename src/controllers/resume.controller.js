@@ -6,6 +6,9 @@ const { resumeService } = require('../services');
 
 const getResumes = catchAsync(async (req, res) => {
     const options = pick(req.query, ['sortBy', 'limit', 'page']);
+    if (!req.user.id.equals(req.params.job)) {
+        return res.status(httpStatus.UNAUTHORIZED).send({ message: 'You are not authorized to access this job' });
+    }
     const resumes = await resumeService.getResumes(req.params.job, options);
     return res.status(httpStatus.OK).send({ resumes });
 });

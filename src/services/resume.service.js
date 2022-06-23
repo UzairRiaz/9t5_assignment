@@ -11,7 +11,13 @@ const createResume = async (resume) => {
     return newResume;
 }
 
+const deleteResumes = async (job) => {
+    await Resume.deleteMany({ job });
+}
+
+
 module.exports = {
     getResumes,
-    createResume
+    createResume,
+    deleteResumes
 }
